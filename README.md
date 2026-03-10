@@ -1,6 +1,5 @@
 # EcoCleanUp
-Live URL:
-`https://2dayoungkim1171294.pythonanywhere.com/home`
+🌿 Live URL: [EcoCleanUp Live Site](https://2dayoungkim1171294.pythonanywhere.com/home)
 
 ## 1) Project Setup (Local / for macOS users)
 
