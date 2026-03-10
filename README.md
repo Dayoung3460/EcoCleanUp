@@ -1,4 +1,6 @@
 # EcoCleanUp
+Live URL:
+`https://2dayoungkim1171294.pythonanywhere.com/home`
 
 ## 1) Project Setup (Local / for macOS users)
 
@@ -76,9 +78,6 @@ Open your browser and go to:
 4. Run SQL scripts (`create_database.sql`, then `populate_database.sql`) against the PythonAnywhere PostgreSQL database.
 5. Configure the PythonAnywhere web app (WSGI) to serve the Flask app.
 6. Reload the web app and test login for each role.
-
-Live URL:
-`https://2dayoungkim1171294.pythonanywhere.com/home`
 
 ## 4) Test Data
 
