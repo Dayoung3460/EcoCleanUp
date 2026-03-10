@@ -1,6 +1,9 @@
 # EcoCleanUp
 🌿 Live URL: [EcoCleanUp Live Site](https://2dayoungkim1171294.pythonanywhere.com/home)
 
+
+EcoCleanUp is a community platform for organising and joining local cleanup events. It supports role-based access for volunteers, event leaders, and admins, with features for event registration, participation tracking, and feedback.
+
 ## 1) Project Setup (Local / for macOS users)
 
 ### Prerequisites
