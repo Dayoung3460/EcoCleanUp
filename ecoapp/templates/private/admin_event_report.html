@@ -1,0 +1,86 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}Event Report{% endblock %}
+{% set active_page = 'admin_reports' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/section_tabs.css') }}">
+
+<section class="mb-4">
+  <h1 class="h3 text-success">Event Reports</h1>
+  <p class="text-muted">Attendance and engagement summary across all events.</p>
+
+  <div class="d-flex flex-wrap justify-content-end gap-2 mb-3">
+    <a
+      class="btn btn-outline-success btn-sm"
+      href="{{ url_for('admin_event_report_export_csv') }}"
+    >
+      Download CSV
+    </a>
+    <a
+      class="btn btn-outline-success btn-sm"
+      href="{{ url_for('admin_event_report_export_pdf') }}"
+    >
+      Download PDF
+    </a>
+  </div>
+  
+  <div class="report-tabs" role="tablist" aria-label="Report type navigation">
+    <a class="report-tab inactive" href="{{ url_for('admin_platform_report') }}" role="tab" aria-selected="false">Platform</a>
+    <a class="report-tab active" href="{{ url_for('admin_event_report') }}" role="tab" aria-selected="true" aria-current="page">Event</a>
+  </div>
+  <div class="report-tabs-line"></div>
+</section>
+
+{% if report_rows %}
+  <div class="table-responsive card border-0 shadow-sm">
+    <table class="table mb-0 align-middle">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Date</th>
+          <th>Event Leader</th>
+          <th>Registrations</th>
+          <th>Attendees</th>
+          <th>Bags</th>
+          <th>Recyclables</th>
+          <th>Other Achievements</th>
+          <th>Avg Rating</th>
+          <th>Volunteers</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in report_rows %}
+          <tr>
+            <td>{{ row.event_name }}</td>
+            <td>{{ row.event_date }}</td>
+            <td>{{ row.event_leader_name }}</td>
+            <td>{{ row.registrations }}</td>
+            <td>{{ row.attendees }}</td>
+            <td>{{ row.bags_collected }}</td>
+            <td>{{ row.recyclables_sorted }}</td>
+            <td>{{ row.other_achievements or '-' }}</td>
+            <td>
+              {% if row.avg_rating is not none %}
+                {{ row.avg_rating }}/5
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>
+              <a
+                class="btn btn-sm btn-outline-primary"
+                href="{{ url_for('view_event_volunteers', event_id=row.event_id, source='admin_event_report') }}"
+              >
+                View
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-secondary">No event report data available.</div>
+{% endif %}
+{% endblock %}

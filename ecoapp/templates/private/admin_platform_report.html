@@ -1,0 +1,117 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}Platform Report{% endblock %}
+{% set active_page = 'admin_reports' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/section_tabs.css') }}">
+
+<section class="mb-4">
+  <h1 class="h3 text-success">Platform-wide Report</h1>
+  <p class="text-muted">Overall platform statistics including users, events, and feedback.</p>
+  <div class="report-tabs" role="tablist" aria-label="Report type navigation">
+    <a class="report-tab active" href="{{ url_for('admin_platform_report') }}" role="tab" aria-selected="true" aria-current="page">Platform</a>
+    <a class="report-tab inactive" href="{{ url_for('admin_event_report') }}" role="tab" aria-selected="false">Event</a>
+  </div>
+  <div class="report-tabs-line"></div>
+</section>
+
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 mb-2">Total Events</h2>
+        <p class="display-2 mb-2">{{ events_summary.total_events }}</p>
+        <div class="d-flex align-items-center flex-wrap gap-3 mb-2">
+          <span class="d-inline-flex align-items-center gap-1 text-muted">
+            <i class="bi bi-calendar-event-fill text-success"></i>
+            <span>Upcoming</span>
+            <strong class="text-dark">{{ events_summary.upcoming_events }}</strong>
+          </span><span class="d-inline-flex align-items-center gap-1 text-muted">
+            <i class="bi bi-clock-fill text-secondary"></i>
+            <span>Past</span>
+            <strong class="text-dark">{{ events_summary.past_events }}</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 mb-2">Total Users</h2>
+        <p class="display-2 mb-2">{{ users_summary.total_volunteers + users_summary.total_event_leaders + users_summary.total_admins }}</p>
+        <div class="d-flex align-items-center flex-wrap gap-3 mb-2">
+          <span class="d-inline-flex align-items-center gap-2">
+            <i class="bi bi-person-fill text-primary"></i>
+            <span>Volunteers</span>
+            <strong>{{ users_summary.total_volunteers }}</strong>
+          </span>
+          <span class="d-inline-flex align-items-center gap-2">
+            <i class="bi bi-star-fill" style="color:#6f42c1;"></i>
+            <span>Event Leaders</span>
+            <strong>{{ users_summary.total_event_leaders }}</strong>
+          </span>
+          <span class="d-inline-flex align-items-center gap-2">
+            <i class="bi bi-shield-fill" style="color:#fd7e14;"></i>
+            <span>Admins</span>
+            <strong>{{ users_summary.total_admins }}</strong>
+          </span>
+        </div>
+        <div class="d-flex align-items-center flex-wrap gap-4">
+          <span class="d-inline-flex align-items-center gap-2">
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <span>Active</span><strong>{{ users_summary.total_active_users }}</strong>
+          </span>
+          <span class="d-inline-flex align-items-center gap-2">
+            <i class="bi bi-pause-circle-fill text-secondary"></i>
+            <span>Inactive</span>
+            <strong>{{ users_summary.total_inactive_users }}</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 mb-2">Feedback Submissions</h2>
+        <p class="display-2 mb-2">{{ feedback_summary.total_feedback_submissions }}</p>
+        <div class="d-flex align-items-center gap-2 text-muted">
+          <span>Avg Rating</span>
+          {% if feedback_summary.avg_event_rating is not none %}
+            <strong class="rating-value">{{ feedback_summary.avg_event_rating }}/5</strong>
+          {% else %}
+            <strong class="text-dark">-</strong>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 mb-2">Event Registrations</h2>
+        <p class="display-2 mb-2">{{ registrations_summary.total_registrations }}</p>
+        <div class="d-flex align-items-center flex-wrap gap-3 mb-2">
+          <span class="d-inline-flex align-items-center gap-2 text-muted">
+            <i class="bi bi-person-check-fill text-success"></i>
+            <span>Present</span>
+            <strong class="text-dark">{{ registrations_summary.total_attendance_present }}</strong>
+          </span>
+          <span class="d-inline-flex align-items-center gap-2 text-muted">
+            <i class="bi bi-x-circle-fill text-danger"></i>
+            <span>Absent</span>
+            <strong class="text-dark">{{ registrations_summary.total_attendance_absent }}</strong>
+          </span>
+          <span class="d-inline-flex align-items-center gap-2 text-muted">
+            <i class="bi bi-hourglass-split text-secondary"></i>
+            <span>Pending</span>
+            <strong class="text-dark">{{ registrations_summary.total_attendance_pending }}</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

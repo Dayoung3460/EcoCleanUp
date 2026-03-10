@@ -1,0 +1,128 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}Event Volunteers{% endblock %}
+{% set active_page = 'admin_events' if is_admin else 'leader_events' %}
+
+{% block content %}
+<section class="mb-3">
+  <a
+    class="btn btn-outline-secondary mb-2"
+    href="{{ back_url }}"
+  >
+    Back
+  </a>
+  <div>
+    <h1 class="h3 text-success mb-1">{{ event.event_name }}</h1>
+    <p class="text-muted small mb-1">
+      <i class="bi bi-star-fill me-1" style="color: #6f42c1;" aria-hidden="true"></i>
+      Event Leader: {{ event.event_leader_name }}
+    </p>
+    <p class="text-muted mb-0">{{ event.event_date }} | {{ event.start_time.strftime('%H:%M') if event.start_time else 'TBA' }} - {{ event.end_time.strftime('%H:%M') if event.end_time else 'TBA' }}</p>
+  </div>
+</section>
+
+<section class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <h2 class="h5">Registered Volunteers</h2>
+    {% if volunteers %}
+      <form action="{{ url_for('update_attendance', event_id=event.event_id) }}" method="post">
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Attendance</th>
+                {% if not is_admin %}
+                  <th>Action</th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for v in volunteers %}
+                <tr>
+                  <td>{{ v.full_name }}</td>
+                  <td>{{ v.username }}</td>
+                  <td>{{ v.email }}</td>
+                  <td>
+                    {% if is_admin %}
+                      {% set attendance_status = v.attendance if v.attendance else 'pending' %}
+                      <span
+                        class="badge {% if attendance_status == 'present' %}text-bg-success{% elif attendance_status == 'absent' %}text-bg-danger{% else %}text-bg-secondary{% endif %}"
+                      >
+                        {{ attendance_status.title() }}
+                      </span>
+                    {% else %}
+                      <select class="form-select form-select-sm" name="attendance_{{ v.registration_id }}">
+                        {% for value in ['pending','present','absent'] %}
+                          <option value="{{ value }}" {% if v.attendance == value %}selected{% endif %}>{{ value.title() }}</option>
+                        {% endfor %}
+                      </select>
+                    {% endif %}
+                  </td>
+                  {% if not is_admin %}
+                    <td>
+                      <button
+                        class="btn btn-sm btn-outline-danger"
+                        type="submit"
+                        formaction="{{ url_for('remove_volunteer', event_id=event.event_id, volunteer_id=v.volunteer_id) }}"
+                        formmethod="post"
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  {% endif %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% if not is_admin %}
+          <button class="btn btn-success" type="submit">Save Attendance</button>
+        {% endif %}
+      </form>
+    {% else %}
+      <p class="text-muted mb-0">No volunteers registered yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="card border-0 shadow-sm">
+  <div class="card-body">
+    <h2 class="h5">Record Event Outcomes</h2>
+    {% if is_admin %}
+      {% if outcome %}
+        <div class="row g-2">
+          <div class="col-md-4">
+            <label class="form-label">Number of Attendees</label>
+            <input type="number" class="form-control" value="{{ outcome.num_attendees }}" disabled>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Bags Collected</label>
+            <input type="number" class="form-control" value="{{ outcome.bags_collected }}" disabled>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Recyclables Sorted</label>
+            <input type="number" class="form-control" value="{{ outcome.recyclables_sorted }}" disabled>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Other Achievements</label>
+            <textarea class="form-control" rows="2" disabled>{{ outcome.other_achievements or '' }}</textarea>
+          </div>
+        </div>
+      {% else %}
+        <p class="text-muted mb-0">No outcomes recorded yet for this event.</p>
+      {% endif %}
+    {% else %}
+      <form action="{{ url_for('save_event_outcomes', event_id=event.event_id) }}" method="post" class="row g-2">
+        <div class="col-md-4"><label class="form-label">Number of Attendees</label><input type="number" min="0" name="num_attendees" class="form-control" value="{{ outcome.num_attendees if outcome else present_attendees }}" required><div class="form-text">Recommended: match attendance Present count (current: {{ present_attendees }}).</div></div>
+        <div class="col-md-4"><label class="form-label">Bags Collected</label><input type="number" min="0" name="bags_collected" class="form-control" value="{{ outcome.bags_collected if outcome else 0 }}" required></div>
+        <div class="col-md-4"><label class="form-label">Recyclables Sorted</label><input type="number" min="0" name="recyclables_sorted" class="form-control" value="{{ outcome.recyclables_sorted if outcome else 0 }}" required></div>
+        <div class="col-12"><label class="form-label">Other Achievements</label><textarea name="other_achievements" class="form-control" rows="2">{{ outcome.other_achievements if outcome else '' }}</textarea></div>
+        <div class="col-12"><button class="btn btn-success" type="submit">Save Outcomes</button></div>
+      </form>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

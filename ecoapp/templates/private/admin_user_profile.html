@@ -1,0 +1,77 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}User Profile{% endblock %}
+{% set active_page = 'admin_users' %}
+
+{% block content %}
+<section class="mb-3">
+  <a class="btn btn-outline-secondary mb-2" href="{{ url_for('admin_users', **back_args) }}">Back to Users</a>
+  <h1 class="h3 text-success mb-0">User Profile</h1>
+</section>
+
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="card shadow-sm border-0">
+      <div class="card-body text-center">
+        <img
+          src="{{ url_for('static', filename='profile_images/' ~ (user_profile.profile_image or 'default-profile.svg')) }}"
+          alt="Profile image"
+          class="rounded-circle border"
+          style="width: 140px; height: 140px; object-fit: cover;"
+        >
+        <p class="mt-3 mb-0 small text-muted">Username</p>
+        <h2 class="h5 mb-1">
+          {% if user_profile.role == 'volunteer' %}
+            <i class="bi bi-person-fill text-primary"></i>
+          {% elif user_profile.role == 'event_leader' %}
+            <i class="bi bi-star-fill" style="color:#6f42c1;"></i>
+          {% elif user_profile.role == 'admin' %}
+            <i class="bi bi-shield-fill" style="color:#fd7e14;"></i>
+          {% endif %}
+          {{ user_profile.username }}
+        </h2>
+        <p class="text-muted mb-1">{{ user_profile.full_name }}</p>
+        <p class="mb-1">{{ user_profile.email }}</p>
+        <span class="badge {% if user_profile.status == 'active' %}text-bg-success{% else %}text-bg-secondary{% endif %}">{{ user_profile.status.title() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h3 class="h5 mb-3">Contact and Profile Details</h3>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <p class="small text-muted mb-1">Contact Number</p>
+            <p class="mb-0">{{ user_profile.contact_number or '-' }}</p>
+          </div>
+          <div class="col-md-6">
+            <p class="small text-muted mb-1">Created At</p>
+            <p class="mb-0">{{ user_profile.created_at.strftime('%Y-%m-%d %H:%M') if user_profile.created_at else '-' }}</p>
+          </div>
+          <div class="col-12">
+            <p class="small text-muted mb-1">Home Address</p>
+            <p class="mb-0">{{ user_profile.home_address or '-' }}</p>
+          </div>
+          <div class="col-12">
+            <p class="small text-muted mb-1">Environmental Interests</p>
+            <p class="mb-0">{{ user_profile.environmental_interests or '-' }}</p>
+          </div>
+          {% if user_profile.role == 'volunteer' %}
+          <div class="col-md-6">
+            <p class="small text-muted mb-1">Attended Events</p>
+            <p class="mb-0">{{ user_profile.attended_events }}</p>
+          </div>
+          {% elif user_profile.role == 'event_leader' %}
+          <div class="col-md-6">
+            <p class="small text-muted mb-1">Managed Events</p>
+            <p class="mb-0">{{ user_profile.managed_events }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

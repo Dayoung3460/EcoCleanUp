@@ -1,0 +1,73 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}Edit Event{% endblock %}
+{% set active_page = 'admin_events' %}
+
+{% block content %}
+<section>
+  <h1 class="h3 text-success mb-3">Edit Event</h1>
+  <div class="card border-0 shadow-sm">
+    <div class="card-body">
+      <p class="small text-muted mb-3">Event Leader: <strong>{{ event.event_leader_name }}</strong></p>
+      <p class="small text-muted mb-2"><span class="text-danger">*</span> Required fields</p>
+
+      <form action="{{ url_for('admin_update_event', event_id=event.event_id) }}" method="post" class="row g-2">
+        <div class="col-md-6">
+          <label class="form-label mb-1" for="edit_event_name">Event name <span class="text-danger">*</span></label>
+          <input class="form-control" id="edit_event_name" name="event_name" value="{{ event.event_name }}" maxlength="100" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label mb-1" for="edit_location">Location <span class="text-danger">*</span></label>
+          <input class="form-control" id="edit_location" name="location" value="{{ event.location }}" maxlength="255" required>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label mb-1" for="edit_event_type">Type</label>
+          <input class="form-control" id="edit_event_type" name="event_type" value="{{ event.event_type or '' }}" maxlength="50">
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label mb-1" for="edit_event_date">Event date <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" id="edit_event_date" name="event_date" value="{{ event.event_date }}" required>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label mb-1" for="edit_duration">Duration (min)</label>
+          <input type="number" min="1" class="form-control" id="edit_duration" name="duration" value="{{ event.duration or '' }}">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label mb-1" for="edit_start_time">Start time</label>
+          <input type="time" class="form-control" id="edit_start_time" name="start_time" value="{{ event.start_time or '' }}">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label mb-1" for="edit_end_time">End time</label>
+          <input type="time" class="form-control" id="edit_end_time" name="end_time" value="{{ event.end_time or '' }}">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label mb-1" for="edit_description">Description</label>
+          <textarea class="form-control" id="edit_description" name="description" rows="3" maxlength="2000">{{ event.description or '' }}</textarea>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label mb-1" for="edit_supplies">Supplies</label>
+          <textarea class="form-control" id="edit_supplies" name="supplies" rows="3" maxlength="1000">{{ event.supplies or '' }}</textarea>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label mb-1" for="edit_safety_instructions">Safety instructions</label>
+          <textarea class="form-control" id="edit_safety_instructions" name="safety_instructions" rows="3" maxlength="1000">{{ event.safety_instructions or '' }}</textarea>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-success" type="submit">Save Changes</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('admin_events') }}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

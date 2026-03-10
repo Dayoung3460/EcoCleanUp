@@ -1,0 +1,61 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}Volunteer Home{% endblock %}
+{% set active_page = 'home' %}
+
+{% block content %}
+<section class="text-center py-2 py-md-4">
+  <h1 class="display-6 text-success">Volunteer Dashboard</h1>
+  <p class="lead text-muted">Browse upcoming events, register and submit feedback.</p>
+</section>
+
+<div class="row g-3 mb-4">
+  <div class="col-lg-6">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <h2 class="h5 mb-3 text-success">Event Summary</h2>
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="p-3 rounded border bg-light h-100">
+              <h3 class="h6 text-muted mb-1">Upcoming Registrations</h3>
+              <p class="display-6 mb-0">{{ event_stats.upcoming_count }}</p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="p-3 rounded border bg-light h-100">
+              <h3 class="h6 text-muted mb-1">Attended Events</h3>
+              <p class="display-6 mb-0">{{ event_stats.attended_past_count }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <h2 class="h5 mb-3 text-success">Feedback Summary</h2>
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="p-3 rounded border bg-light h-100">
+              <h3 class="h6 text-muted mb-1">Feedback To Submit</h3>
+              <p class="display-6 mb-0">{{ feedback_stats.pending_feedback_count }}</p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="p-3 rounded border bg-light h-100">
+              <h3 class="h6 text-muted mb-1">Feedback Submitted</h3>
+              <p class="display-6 mb-0">{{ feedback_stats.feedback_submitted_count }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-column flex-sm-row gap-2">
+  <a class="btn btn-success" href="{{ url_for('browse_events') }}">Browse Upcoming Events</a>
+  <a class="btn btn-outline-success" href="{{ url_for('volunteer_events') }}">View My Events</a>
+</div>
+{% endblock %}

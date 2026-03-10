@@ -1,0 +1,58 @@
+{% extends 'common/public_base.html' %}
+
+{% block title %}Log In - EcoCleanUp Hub{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+              <h1 class="h3 mb-3 text-success">EcoCleanUp Hub Log In</h1>
+              <p class="text-muted">Welcome back! Sign in to join upcoming cleanups and track your impact.
+              </p>
+
+              <form action="{{ url_for('login') }}" method="post" novalidate>
+                <div class="mb-3">
+                  <label for="username" class="form-label">Username</label>
+                  <input type="text" class="form-control{% if username_invalid %} is-invalid{% endif %}" id="username" name="username" maxlength="50" value="{{ username }}" required>
+                  <div class="invalid-feedback">No account found for this username.</div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="password" class="form-label">Password</label>
+                  <div class="input-group">
+                    <input type="password" class="form-control{% if password_invalid or account_inactive %} is-invalid{% endif %}" id="password" name="password" required>
+                    <button
+                      class="btn btn-outline-secondary"
+                      type="button"
+                      id="togglePassword"
+                      aria-label="Show password"
+                      aria-pressed="false"
+                    >
+                      <i id="eyeOpen" class="bi bi-eye" aria-hidden="true"></i>
+                      <i id="eyeSlash" class="bi bi-eye-slash" aria-hidden="true" style="display:none;"></i>
+                    </button>
+                    {% if account_inactive %}
+                      <div class="invalid-feedback">This account is inactive. Contact an admin.</div>
+                    {% else %}
+                      <div class="invalid-feedback">Incorrect username or password.</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Log In</button>
+              </form>
+            </div>
+            <div class="card-footer bg-white text-center">
+              <span class="small">No account yet? <a href="{{ url_for('signup') }}">Register as volunteer</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{{ url_for('static', filename='js/password-toggle.js') }}"></script>
+{% endblock %}

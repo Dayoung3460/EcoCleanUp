@@ -1,0 +1,140 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}Manage Events{% endblock %}
+{% set active_page = 'admin_events' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/section_tabs.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leader_events.css') }}">
+
+<section class="mb-4">
+  <h1 class="h3 text-success mb-1">Manage All Events</h1>
+  <p class="text-muted mb-0">Admins can review, edit, cancel, and inspect volunteers for any event.</p>
+</section>
+
+<section>
+  <div class="report-tabs" role="tablist" aria-label="Admin event tabs">
+    <a
+      class="report-tab {% if selected_tab == 'today' %}active{% else %}inactive{% endif %}"
+      href="{{ url_for('admin_events', tab='today') }}"
+      role="tab"
+      aria-selected="{{ 'true' if selected_tab == 'today' else 'false' }}"
+      {% if selected_tab == 'today' %}aria-current="page"{% endif %}
+    >
+      Today ({{ today_count }})
+    </a>
+    <a
+      class="report-tab {% if selected_tab == 'upcoming' %}active{% else %}inactive{% endif %}"
+      href="{{ url_for('admin_events', tab='upcoming') }}"
+      role="tab"
+      aria-selected="{{ 'true' if selected_tab == 'upcoming' else 'false' }}"
+      {% if selected_tab == 'upcoming' %}aria-current="page"{% endif %}
+    >
+      Upcoming ({{ upcoming_count }})
+    </a>
+    <a
+      class="report-tab {% if selected_tab == 'past' %}active{% else %}inactive{% endif %}"
+      href="{{ url_for('admin_events', tab='past') }}"
+      role="tab"
+      aria-selected="{{ 'true' if selected_tab == 'past' else 'false' }}"
+      {% if selected_tab == 'past' %}aria-current="page"{% endif %}
+    >
+      Past ({{ past_count }})
+    </a>
+    <a
+      class="report-tab {% if selected_tab == 'cancelled' %}active{% else %}inactive{% endif %}"
+      href="{{ url_for('admin_events', tab='cancelled') }}"
+      role="tab"
+      aria-selected="{{ 'true' if selected_tab == 'cancelled' else 'false' }}"
+      {% if selected_tab == 'cancelled' %}aria-current="page"{% endif %}
+    >
+      Cancelled ({{ cancelled_count }})
+    </a>
+  </div>
+  <div class="report-tabs-line mb-3"></div>
+
+  {% if events %}
+    <div class="row g-3">
+      {% for event in events %}
+        <div class="col-lg-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="d-flex flex-column flex-md-row align-items-start gap-2 mb-2">
+                <h2 class="h5 mb-0 flex-grow-1">{{ event.event_name }}</h2>
+                {% if selected_tab != 'cancelled' %}
+                  <div class="d-flex flex-wrap gap-2 flex-shrink-0 justify-content-start justify-content-md-end ms-md-auto">
+                    <a
+                      class="btn btn-sm btn-outline-primary"
+                      href="{{ url_for('view_event_volunteers', event_id=event.event_id) }}"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title="Volunteers & Outcomes"
+                      aria-label="Volunteers & Outcomes"
+                    >
+                      <i class="bi bi-people"></i>
+                    </a>
+                    {% if not event.is_cancelled %}
+                      <a
+                        class="btn btn-sm btn-outline-secondary"
+                        href="{{ url_for('admin_edit_event_form', event_id=event.event_id) }}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Edit Event"
+                        aria-label="Edit Event"
+                      >
+                        <i class="bi bi-pencil"></i>
+                      </a>
+                      <form action="{{ url_for('admin_cancel_event', event_id=event.event_id) }}" method="post" onsubmit="return confirm('Cancel this event? The event will remain in reports as cancelled.');">
+                        <button
+                          class="btn btn-sm btn-outline-danger"
+                          type="submit"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          title="Cancel Event"
+                          aria-label="Cancel Event"
+                        >
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </form>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+
+              <p class="text-muted mb-1">
+                <i class="bi bi-star-fill me-1" style="color: #6f42c1;" aria-hidden="true"></i>
+                Event Leader: {{ event.event_leader_name }}
+              </p>
+              <p class="mb-1"><strong>Type:</strong> {{ event.event_type or 'Not specified' }}</p>
+              <p class="mb-1"><strong>Date:</strong> {{ event.event_date }} | <strong>Time:</strong> {{ event.start_time.strftime('%H:%M') if event.start_time else 'TBA' }} - {{ event.end_time.strftime('%H:%M') if event.end_time else 'TBA' }}</p>
+              <p class="mb-1"><strong>Location:</strong> {{ event.location }}</p>
+              {% if event.description %}
+                <p class="mb-2 event-description">{{ event.description }}</p>
+              {% endif %}
+              <p class="mb-2">
+                <strong>Registrations:</strong> {{ event.registrations }}
+                {% if selected_tab == 'past' %}
+                  | <strong>Present:</strong> {{ event.present_count }}
+                {% endif %}
+              </p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-secondary">
+      {% if selected_tab == 'today' %}
+        No events are scheduled for today.
+      {% elif selected_tab == 'upcoming' %}
+        No upcoming events found.
+      {% elif selected_tab == 'past' %}
+        No past events found.
+      {% else %}
+        No cancelled events found.
+      {% endif %}
+    </div>
+  {% endif %}
+</section>
+
+{% endblock %}

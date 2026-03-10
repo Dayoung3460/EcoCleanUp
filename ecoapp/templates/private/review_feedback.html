@@ -1,0 +1,82 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}Review Feedback{% endblock %}
+{% set active_page = 'leader_feedback' %}
+
+{% block content %}
+<section class="mb-4">
+  <h1 class="h3 text-success">{% if is_admin %}All Feedback{% else %}Feedback for My Events{% endif %}</h1>
+</section>
+
+<section class="mb-4">
+  <form method="get" action="{{ url_for('review_feedback') }}" class="row g-2 align-items-end">
+    <div class="col-md-6">
+      <label for="feedback-event-filter" class="form-label">Search by event name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="feedback-event-filter"
+        name="event"
+        value="{{ selected_event_query or '' }}"
+        placeholder="Type an event name"
+      >
+    </div>
+    <div class="col-md-3">
+      <label for="feedback-rating-filter" class="form-label">Filter by rating</label>
+      <select class="form-select" id="feedback-rating-filter" name="rating">
+        <option value="" {% if not selected_rating %}selected{% endif %}>All ratings</option>
+        {% for value in range(1, 6) %}
+          <option value="{{ value }}" {% if selected_rating == value %}selected{% endif %}>{{ value }} star{% if value != 1 %}s{% endif %}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <div class="d-flex flex-column flex-sm-row gap-2">
+        <button type="submit" class="btn btn-success flex-fill">Filters</button>
+        <a href="{{ url_for('review_feedback') }}" class="btn btn-outline-secondary flex-fill">Reset</a>
+      </div>
+    </div>
+  </form>
+</section>
+
+{% if feedback_rows %}
+  <div class="table-responsive card border-0 shadow-sm">
+    <table class="table mb-0 align-middle">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Date</th>
+          <th>Volunteer</th>
+          <th>Rating</th>
+          <th>Comments</th>
+          <th>Submitted</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in feedback_rows %}
+          <tr>
+            <td>{{ row.event_name }}</td>
+            <td>{{ row.event_date }}</td>
+            <td>{{ row.volunteer_name }}</td>
+            <td>
+              <span class="rating-stars" aria-label="Rated {{ row.rating }} out of 5">
+                {% for _ in range(row.rating) %}
+                  <i class="bi bi-star-fill" aria-hidden="true"></i>
+                {% endfor %}
+                {% for _ in range(5 - row.rating) %}
+                  <i class="bi bi-star-fill star-empty" aria-hidden="true"></i>
+                {% endfor %}
+              </span>
+              <span class="rating-value">{{ row.rating }}/5</span>
+            </td>
+            <td>{{ row.comments or '-' }}</td>
+            <td>{{ row.submitted_at.strftime('%Y-%m-%d %H:%M') if row.submitted_at else '-' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-secondary">No feedback records available.</div>
+{% endif %}
+{% endblock %}

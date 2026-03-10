@@ -1,0 +1,254 @@
+:root {
+  --eco-green-950: #0b3d2f;
+  --eco-green-700: #1d7a52;
+  --eco-yellow-500: #f5c518;
+  --eco-text-main: #1f2937;
+  --eco-text-muted: #5f6b7a;
+  --eco-surface: #f6f8f7;
+  --eco-border: #e4ece7;
+}
+
+body.bg-light {
+  background: var(--eco-surface) !important;
+  font-family: "Noto Sans KR", sans-serif;
+  color: var(--eco-text-main);
+}
+
+.landing-page {
+  width: 100%;
+}
+
+.landing-inner {
+  width: min(1120px, calc(100% - 4rem));
+  margin: 0 auto;
+}
+
+.home-header {
+  width: 100%;
+}
+
+.home-header .navbar {
+  min-height: 78px;
+  padding: 0;
+  width: 100%;
+}
+
+.home-header-inner {
+  width: min(1120px, calc(100% - 4rem));
+  margin: 0 auto;
+  padding: 0;
+}
+
+.home-header .navbar-brand {
+  color: #fff;
+}
+
+.landing-hero {
+  position: relative;
+  min-height: 62vh;
+  display: flex;
+  align-items: center;
+  background:
+    linear-gradient(105deg, rgba(10, 31, 24, 0.56), rgba(18, 66, 46, 0.42)),
+    url("../images/home-hero-user.png") center/cover no-repeat;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 30%, rgba(14, 43, 32, 0.35) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  padding: 4.5rem 0;
+}
+
+.hero-kicker {
+  display: inline-block;
+  margin-bottom: 0.65rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.hero-content h1 {
+  margin-bottom: 0.85rem;
+  max-width: 860px;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.08;
+}
+
+.hero-subtitle {
+  margin-bottom: 1.25rem;
+  max-width: 760px;
+  font-size: clamp(1rem, 2vw, 1.55rem);
+  line-height: 1.35;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.btn-home-register {
+  background: var(--eco-yellow-500);
+  border: 1px solid var(--eco-yellow-500);
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.btn-home-register:hover {
+  background: #ffd84a;
+  border-color: #ffd84a;
+  color: #1f2937;
+}
+
+.landing-content {
+  padding: 2.25rem 0 2.7rem;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.25rem;
+}
+
+.flow-section,
+.impact-section {
+  background: #fff;
+  border: 1px solid var(--eco-border);
+  border-radius: 18px;
+  padding: 1.25rem;
+}
+
+.flow-section h2,
+.impact-section h2 {
+  margin-bottom: 1rem;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.9rem;
+  color: #103f2f;
+}
+
+.flow-steps {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.flow-step {
+  border-radius: 14px;
+  border: 1px solid #ecf3ee;
+  background: #f9fcfa;
+  padding: 0.9rem;
+}
+
+.step-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  margin-bottom: 0.5rem;
+  background: #dff2e7;
+  color: #166142;
+  font-size: 1.1rem;
+}
+
+.flow-step h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.07rem;
+  font-weight: 700;
+}
+
+.flow-step p {
+  margin: 0;
+  color: var(--eco-text-muted);
+}
+
+.impact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.impact-item {
+  border-radius: 14px;
+  border: 1px solid #e7efe9;
+  background: linear-gradient(180deg, #ffffff, #f7fbf8);
+  padding: 1rem;
+}
+
+.impact-number {
+  margin: 0;
+  color: #11523a;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+}
+
+.impact-label {
+  margin: 0.2rem 0 0;
+  color: var(--eco-text-muted);
+  line-height: 1.35;
+}
+
+@media (max-width: 991.98px) {
+  .landing-inner {
+    width: calc(100% - 3.5rem);
+  }
+
+  .home-header-inner {
+    width: calc(100% - 3.5rem);
+  }
+
+  .landing-hero {
+    min-height: 54vh;
+  }
+
+  .hero-content {
+    padding: 3rem 0;
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .landing-inner {
+    width: calc(100% - 3rem);
+  }
+
+  .home-header-inner {
+    width: calc(100% - 3rem);
+  }
+
+  .hero-content {
+    padding: 2.5rem 0.5rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .landing-inner {
+    width: calc(100% - 2.5rem);
+  }
+
+  .home-header-inner {
+    width: calc(100% - 2.5rem);
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+  }
+
+  .impact-grid {
+    grid-template-columns: 1fr;
+  }
+}

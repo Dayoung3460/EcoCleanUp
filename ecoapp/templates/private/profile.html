@@ -1,0 +1,126 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}Profile{% endblock %}
+{% set active_page = 'profile' %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="card shadow-sm border-0">
+      <div class="card-body text-center">
+        <!-- tilde(~): concatenates strings. same as phtyo -->
+        <img
+          src="{{ url_for('static', filename='profile_images/' ~ (profile.profile_image or 'default-profile.svg')) }}"
+          alt="Profile image"
+          class="rounded-circle border"
+          style="width: 140px; height: 140px; object-fit: cover;"
+        >
+        <p class="mt-3 mb-0 small text-muted">Username</p>
+        <h2 class="h5 mb-1">
+          {% if profile.role == 'volunteer' %}
+            <i class="bi bi-person-fill text-primary"></i>
+          {% elif profile.role == 'event_leader' %}
+            <i class="bi bi-star-fill" style="color:#6f42c1;"></i>
+          {% elif profile.role == 'admin' %}
+            <i class="bi bi-shield-fill" style="color:#fd7e14;"></i>
+          {% endif %}
+          {{ profile.username }}
+        </h2>
+        <p class="mb-1">{{ profile.email }}</p>
+        <span class="badge {% if profile.status == 'active' %}text-bg-success{% else %}text-bg-secondary{% endif %}">{{ profile.status.title() }}</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <h3 class="h5 mb-3">Update Profile</h3>
+        <form action="{{ url_for('update_profile') }}" method="post" enctype="multipart/form-data">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="full_name" class="form-label">Full Name</label>
+              <input
+                type="text"
+                id="full_name"
+                name="full_name"
+                class="form-control"
+                value="{{ profile.full_name }}"
+                maxlength="100"
+                pattern="[A-Za-zÀ-ÖØ-öø-ÿ' -]{1,100}"
+                title="Use letters, spaces, apostrophes, or hyphens only."
+                required
+              >
+            </div>
+            <div class="col-md-6">
+              <label for="contact_number" class="form-label">Contact Number</label>
+              <input
+                type="text"
+                id="contact_number"
+                name="contact_number"
+                class="form-control"
+                value="{{ profile.contact_number }}"
+                inputmode="numeric"
+                pattern="[0-9 -]{7,25}"
+                title="Use digits only, with optional spaces or hyphens."
+                required
+              >
+            </div>
+            <div class="col-12">
+              <label for="home_address" class="form-label">Home Address</label>
+              <input type="text" id="home_address" name="home_address" class="form-control" value="{{ profile.home_address or '' }}" maxlength="255" required>
+            </div>
+            <div class="col-12">
+              <label for="environmental_interests" class="form-label">Environmental Interests</label>
+              <textarea id="environmental_interests" name="environmental_interests" class="form-control" rows="3" maxlength="255" required>{{ profile.environmental_interests or '' }}</textarea>
+            </div>
+            <div class="col-12">
+              <label for="profile_image" class="form-label">Replace Profile Image (Optional)</label>
+              <input type="file" id="profile_image" name="profile_image" class="form-control" accept=".png,.jpg,.jpeg,.webp,.gif,.svg">
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="remove_profile_image" name="remove_profile_image" value="1">
+                <label class="form-check-label" for="remove_profile_image">
+                  Remove current image and use default image
+                </label>
+              </div>
+              <div class="form-text">Select either upload or remove, not both.</div>
+            </div>
+          </div>
+          <div class="mt-3">
+            <button type="submit" class="btn btn-success">Save Profile Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h3 class="h5 mb-3">Change Password</h3>
+        <p class="text-muted mb-3">
+          If you change your password, you will be signed out for security and asked to log in again.
+        </p>
+        <form action="{{ url_for('change_password') }}" method="post">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label for="current_password" class="form-label">Current Password</label>
+              <input type="password" id="current_password" name="current_password" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+              <label for="new_password" class="form-label">New Password</label>
+              <input type="password" id="new_password" name="new_password" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+              <label for="confirm_new_password" class="form-label">Confirm New Password</label>
+              <input type="password" id="confirm_new_password" name="confirm_new_password" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-text mt-2">Use at least 8 characters, including uppercase, lowercase, a number, and a symbol.</div>
+          <div class="mt-3">
+            <button type="submit" class="btn btn-outline-success">Update Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

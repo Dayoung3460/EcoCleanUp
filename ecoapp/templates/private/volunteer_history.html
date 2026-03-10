@@ -1,0 +1,178 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}My Events{% endblock %}
+{% set active_page = 'my_events' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/section_tabs.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leader_events.css') }}">
+
+<section class="mb-4">
+  <h1 class="h3 text-success">My Events</h1>
+  <p class="text-muted mb-0">View all events you registered for.</p>
+</section>
+
+<section class="mb-3">
+  <div
+    class="report-tabs d-flex flex-nowrap overflow-auto"
+    role="tablist"
+    aria-label="My events tabs"
+  >
+    <a
+      class="report-tab {% if selected_tab == 'today' %}active{% else %}inactive{% endif %}"
+      href="{{ url_for('volunteer_events', tab='today') }}"
+      role="tab"
+      aria-selected="{{ 'true' if selected_tab == 'today' else 'false' }}"
+      {% if selected_tab == 'today' %}aria-current="page"{% endif %}
+    >
+      Today ({{ today_count }})
+    </a>
+    <a
+      class="report-tab {% if selected_tab == 'upcoming' %}active{% else %}inactive{% endif %}"
+      href="{{ url_for('volunteer_events', tab='upcoming') }}"
+      role="tab"
+      aria-selected="{{ 'true' if selected_tab == 'upcoming' else 'false' }}"
+      {% if selected_tab == 'upcoming' %}aria-current="page"{% endif %}
+    >
+      Upcoming ({{ upcoming_count }})
+    </a>
+    <a
+      class="report-tab {% if selected_tab == 'past' %}active{% else %}inactive{% endif %}"
+      href="{{ url_for('volunteer_events', tab='past') }}"
+      role="tab"
+      aria-selected="{{ 'true' if selected_tab == 'past' else 'false' }}"
+      {% if selected_tab == 'past' %}aria-current="page"{% endif %}
+    >
+      Past ({{ past_count }})
+    </a>
+  </div>
+  <div class="report-tabs-line"></div>
+</section>
+
+{% if history_rows %}
+  <div class="row g-3">
+    {% for row in history_rows %}
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-2 event-card-main">
+              <div>
+                <h2 class="h5 mb-1">{{ row.event_name }}</h2>
+                <p class="text-muted small mb-1">
+                  <i class="bi bi-star-fill me-1" style="color: #6f42c1;" aria-hidden="true"></i>
+                  Event Leader: {{ row.event_leader_name }}
+                </p>
+                <p class="mb-1"><strong>Type:</strong> {{ row.event_type or 'Not specified' }}</p>
+                <p class="mb-1"><strong>Date:</strong> {{ row.event_date }}</p>
+                <p class="mb-1"><strong>Time:</strong> {{ row.start_time.strftime('%H:%M') if row.start_time else 'TBA' }} - {{ row.end_time.strftime('%H:%M') if row.end_time else 'TBA' }}</p>
+                <p class="mb-1"><strong>Location:</strong> {{ row.location }}</p>
+                <p class="mb-2">
+                  <strong>Duration:</strong>
+                  {% if row.duration and row.duration > 0 %}
+                    {% set hours = row.duration // 60 %}
+                    {% set minutes = row.duration % 60 %}
+                    {% if hours > 0 and minutes > 0 %}
+                      {{ hours }} hr {{ minutes }} min
+                    {% elif hours > 0 %}
+                      {{ hours }} hr
+                    {% else %}
+                      {{ minutes }} min
+                    {% endif %}
+                  {% else %}
+                    TBA
+                  {% endif %}
+                </p>
+                {% if row.description %}
+                  <p class="mb-2 event-description">{{ row.description }}</p>
+                {% endif %}
+                {% if row.supplies %}
+                  <p class="mb-1"><strong>Supplies:</strong> {{ row.supplies }}</p>
+                {% endif %}
+                {% if row.safety_instructions %}
+                  <p class="mb-1"><strong>Safety:</strong> {{ row.safety_instructions }}</p>
+                {% endif %}
+                {% if row.is_cancelled %}
+                  <p class="mb-1"><span class="badge text-bg-danger">Cancelled</span></p>
+                {% endif %}
+                {% if selected_tab in ('today', 'past') %}
+                  <p class="mb-0">
+                    <strong>Attendance:</strong>
+                    {% set attendance_status = row.attendance if row.attendance else 'pending' %}
+                    <span
+                      class="badge {% if attendance_status == 'present' %}text-bg-success{% elif attendance_status == 'absent' %}text-bg-danger{% else %}text-bg-secondary{% endif %}"
+                    >
+                      {{ attendance_status.title() }}
+                    </span>
+                  </p>
+                {% endif %}
+              </div>
+              {% if row.rating %}
+                <div class="text-md-end event-rating-meta">
+                  <span class="rating-stars" aria-label="Rated {{ row.rating }} out of 5">
+                    {% for _ in range(row.rating) %}
+                      <i class="bi bi-star-fill" aria-hidden="true"></i>
+                    {% endfor %}
+                    {% for _ in range(5 - row.rating) %}
+                      <i class="bi bi-star-fill star-empty" aria-hidden="true"></i>
+                    {% endfor %}
+                  </span>
+                  <span class="rating-value">{{ row.rating }}/5</span>
+                  <p class="small text-muted mb-0 mt-1">
+                    <span class="d-block">Feedback Submitted:</span>
+                    <span class="text-nowrap">{{ row.submitted_at.strftime('%Y-%m-%d %H:%M') if row.submitted_at else '-' }}</span>
+                  </p>
+                </div>
+              {% endif %}
+            </div>
+
+            {% if row.comments %}
+              <div class="mt-3 p-3 rounded-3 border border-success-subtle bg-success-subtle">
+                <p class="small text-success fw-semibold mb-1">
+                  <i class="bi bi-chat-left-text me-1"></i>Your feedback
+                </p>
+                <p class="mb-0">{{ row.comments }}</p>
+              </div>
+            {% endif %}
+
+            {% if row.event_date <= today and row.attendance == 'present' %}
+              <hr>
+              <form action="{{ url_for('submit_feedback', event_id=row.event_id) }}" method="post" class="row g-2 align-items-end">
+                <div class="col-md-2">
+                  <label class="form-label" for="rating_{{ row.event_id }}">Rating</label>
+                  <select id="rating_{{ row.event_id }}" name="rating" class="form-select" required>
+                    <option value="">Choose</option>
+                    {% for value in [1,2,3,4,5] %}
+                      <option value="{{ value }}" {% if row.rating == value %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-8">
+                  <label class="form-label" for="comments_{{ row.event_id }}">Comments</label>
+                  <input id="comments_{{ row.event_id }}" type="text" name="comments" class="form-control" value="{{ row.comments or '' }}" maxlength="1000">
+                </div>
+                <div class="col-md-2 d-grid">
+                  <button type="submit" class="btn btn-outline-success">
+                    {% if row.rating %}Update{% else %}Submit{% endif %}
+                  </button>
+                </div>
+              </form>
+            {% elif row.event_date <= today %}
+              <p class="small text-muted mt-3 mb-0">Feedback is available only for events marked as Present attendance.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-secondary">
+    {% if selected_tab == 'today' %}
+      You have no events scheduled for today.
+    {% elif selected_tab == 'upcoming' %}
+      You have no upcoming registered events.
+    {% else %}
+      You have no past registered events.
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

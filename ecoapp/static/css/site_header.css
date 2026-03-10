@@ -1,0 +1,23 @@
+.site-navbar {
+  background: linear-gradient(95deg, #0b3d2f, #1d7a52);
+}
+
+.site-brand {
+  font-family: "Poppins", "Noto Sans KR", sans-serif;
+  letter-spacing: 0.2px;
+}
+
+.site-brand-mark {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.site-brand-mark img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}

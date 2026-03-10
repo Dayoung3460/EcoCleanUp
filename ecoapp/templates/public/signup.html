@@ -1,0 +1,138 @@
+{% extends 'common/public_base.html' %}
+
+{% block title %}Volunteer Registration - EcoCleanUp Hub{% endblock %}
+
+{% block content %}
+    <div class="container py-4 py-md-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+              <h1 class="h3 text-success mb-3">Register New Volunteer</h1>
+              <p class="text-muted">New registrations are always created as volunteer accounts.</p>
+              
+               <!-- encoding as multipart/form-data: each fields are sent as separate parts and flask handles parsing text to request.form and files to request.files -->
+              <form action="{{ url_for('signup') }}" method="post" enctype="multipart/form-data" novalidate>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control{% if username_error %} is-invalid{% endif %}" id="username" name="username" maxlength="50" value="{{ username }}" required>
+                    <div class="invalid-feedback">{{ username_error }}</div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control{% if email_error %} is-invalid{% endif %}" id="email" name="email" maxlength="100" value="{{ email }}" required>
+                    <div class="invalid-feedback">{{ email_error }}</div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                      <input
+                        type="password"
+                        class="form-control{% if password_error %} is-invalid{% endif %}"
+                        id="password"
+                        name="password"
+                        required
+                      >
+                      <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        id="toggleSignupPassword"
+                        aria-label="Show password"
+                        aria-pressed="false"
+                      >
+                        <i id="signupPasswordEyeOpen" class="bi bi-eye" aria-hidden="true"></i>
+                        <i id="signupPasswordEyeSlash" class="bi bi-eye-slash" aria-hidden="true" style="display:none;"></i>
+                      </button>
+                    </div>
+                    <div class="form-text">Use at least 8 characters, including uppercase, lowercase, a number, and a symbol.</div>
+                    <div class="invalid-feedback">{{ password_error }}</div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="confirm_password" class="form-label">Confirm Password</label>
+                    <div class="input-group">
+                      <input
+                        type="password"
+                        class="form-control{% if password_error %} is-invalid{% endif %}"
+                        id="confirm_password"
+                        name="confirm_password"
+                        required
+                      >
+                      <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        id="toggleSignupConfirmPassword"
+                        aria-label="Show password"
+                        aria-pressed="false"
+                      >
+                        <i id="signupConfirmPasswordEyeOpen" class="bi bi-eye" aria-hidden="true"></i>
+                        <i id="signupConfirmPasswordEyeSlash" class="bi bi-eye-slash" aria-hidden="true" style="display:none;"></i>
+                      </button>
+                    </div>
+                    <div class="invalid-feedback">{{ password_error }}</div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="full_name" class="form-label">Full Name</label>
+                    <input
+                      type="text"
+                      class="form-control{% if full_name_error %} is-invalid{% endif %}"
+                      id="full_name"
+                      name="full_name"
+                      value="{{ full_name }}"
+                      maxlength="100"
+                      pattern="[A-Za-zÀ-ÖØ-öø-ÿ' -]{1,100}"
+                      title="Use letters, spaces, apostrophes, or hyphens only."
+                      required
+                    >
+                    <div class="invalid-feedback">{{ full_name_error }}</div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="contact_number" class="form-label">Contact Number</label>
+                    <input
+                      type="text"
+                      class="form-control{% if contact_number_error %} is-invalid{% endif %}"
+                      id="contact_number"
+                      name="contact_number"
+                      value="{{ contact_number }}"
+                      inputmode="numeric"
+                      pattern="[0-9 -]{7,25}"
+                      title="Use digits only, with optional spaces or hyphens."
+                      required
+                    >
+                    <div class="invalid-feedback">{{ contact_number_error }}</div>
+                  </div>
+                  <div class="col-12">
+                    <label for="home_address" class="form-label">Home Address</label>
+                    <input type="text" class="form-control{% if home_address_error %} is-invalid{% endif %}" id="home_address" name="home_address" value="{{ home_address or '' }}" maxlength="255" required>
+                    <div class="invalid-feedback">{{ home_address_error }}</div>
+                  </div>
+                  <div class="col-12">
+                    <label for="environmental_interests" class="form-label">Environmental Interests</label>
+                    <textarea class="form-control{% if environmental_interests_error %} is-invalid{% endif %}" id="environmental_interests" name="environmental_interests" rows="3" maxlength="255" required>{{ environmental_interests or '' }}</textarea>
+                    <div class="invalid-feedback">{{ environmental_interests_error }}</div>
+                  </div>
+                  <div class="col-12">
+                    <label for="profile_image" class="form-label">Profile Image (Optional)</label>
+                    <input type="file" class="form-control{% if profile_image_error %} is-invalid{% endif %}" id="profile_image" name="profile_image" accept=".png,.jpg,.jpeg,.webp,.gif">
+                    <div class="invalid-feedback">{{ profile_image_error }}</div>
+                  </div>
+                </div>
+
+                <div class="mt-4 d-grid">
+                  <button type="submit" class="btn btn-success">Create Volunteer Account</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="card-footer bg-white text-center">
+              <span class="small">Already registered? <a href="{{ url_for('login') }}">Log in</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{{ url_for('static', filename='js/password-toggle.js') }}"></script>
+{% endblock %}

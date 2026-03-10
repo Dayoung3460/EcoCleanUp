@@ -1,0 +1,96 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}Events{% endblock %}
+{% set active_page = 'events' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leader_events.css') }}">
+
+<section class="mb-4">
+  <h1 class="h3 text-success mb-3">
+    Cleanup Events
+  </h1>
+
+  <form class="row g-2 align-items-end" method="get" action="{{ url_for('browse_events') }}">
+    <div class="col-md-3">
+      <label for="date" class="form-label">Date</label>
+      <input type="date" id="date" name="date" class="form-control" value="{{ filter_date }}">
+    </div>
+    <div class="col-md-3">
+      <label for="location" class="form-label">Location</label>
+      <input type="text" id="location" name="location" class="form-control" placeholder="e.g. Lincoln" value="{{ filter_location }}">
+    </div>
+    <div class="col-md-3">
+      <label for="event_type" class="form-label">Type</label>
+      <input type="text" id="event_type" name="event_type" class="form-control" placeholder="e.g. beach cleanup" value="{{ filter_type }}">
+    </div>
+    <div class="col-md-3">
+      <div class="d-flex flex-column flex-sm-row gap-2">
+        <button type="submit" class="btn btn-success flex-fill">Filters</button>
+        <a class="btn btn-outline-secondary flex-fill" href="{{ url_for('browse_events') }}">Reset</a>
+      </div>
+    </div>
+  </form>
+</section>
+
+{% if upcoming_events %}
+  <div class="row g-3">
+    {% for event in upcoming_events %}
+      <div class="col-lg-6">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body">
+            <h2 class="h5 mb-1">{{ event.event_name }}</h2>
+            <p class="text-muted small mb-2">
+              <i class="bi bi-star-fill me-1" style="color: #6f42c1;" aria-hidden="true"></i>
+              Event Leader: {{ event.event_leader_name }}
+            </p>
+            <p class="mb-1"><strong>Type:</strong> {{ event.event_type or 'Not specified' }}</p>
+            <p class="mb-1"><strong>Date:</strong> {{ event.event_date }}</p>
+            <p class="mb-1"><strong>Time:</strong> {{ event.start_time.strftime('%H:%M') if event.start_time else 'TBA' }} - {{ event.end_time.strftime('%H:%M') if event.end_time else 'TBA' }}</p>
+            <p class="mb-1"><strong>Location:</strong> {{ event.location }}</p>
+            <p class="mb-2">
+              <strong>Duration:</strong>
+              {% if event.duration and event.duration > 0 %}
+                {% set hours = event.duration // 60 %}
+                {% set minutes = event.duration % 60 %}
+                {% if hours > 0 and minutes > 0 %}
+                  {{ hours }} hr {{ minutes }} min
+                {% elif hours > 0 %}
+                  {{ hours }} hr
+                {% else %}
+                  {{ minutes }} min
+                {% endif %}
+              {% else %}
+                TBA
+              {% endif %}
+            </p>
+            {% if event.description %}
+              <p class="mb-2 event-description">{{ event.description }}</p>
+            {% endif %}
+            {% if event.supplies %}
+              <p class="mb-1"><strong>Supplies:</strong> {{ event.supplies }}</p>
+            {% endif %}
+            {% if event.safety_instructions %}
+              <p class="mb-3"><strong>Safety:</strong> {{ event.safety_instructions }}</p>
+            {% endif %}
+
+            {% if session['role'] == 'volunteer' %}
+              {% if event.event_date < current_date %}
+                <button class="btn btn-outline-secondary" disabled>Event Closed</button>
+              {% elif event.event_id in registered_event_ids %}
+                <button class="btn btn-outline-secondary" disabled>Already Registered</button>
+              {% else %}
+                <form action="{{ url_for('register_event', event_id=event.event_id) }}" method="post">
+                  <button type="submit" class="btn btn-success">Register</button>
+                </form>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-secondary">No events match your filters.</div>
+{% endif %}
+{% endblock %}

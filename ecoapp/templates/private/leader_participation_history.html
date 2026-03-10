@@ -1,0 +1,90 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}Participation History{% endblock %}
+{% set active_page = 'leader_participation' %}
+
+{% block content %}
+<section class="mb-4">
+  <h1 class="h3 text-success">Volunteer Participation History</h1>
+  <p class="text-muted mb-0">Track volunteer participation across all events you manage.</p>
+</section>
+
+<section class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <h2 class="h5">Volunteer Summary</h2>
+    {% if volunteer_summaries %}
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Volunteer</th>
+              <th>Total Events</th>
+              <th>Present</th>
+              <th>Absent</th>
+              <th>Pending</th>
+              <th>Latest Event</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in volunteer_summaries %}
+              <tr>
+                <td>{{ row.volunteer_name }}</td>
+                <td>{{ row.total_events }}</td>
+                <td>{{ row.present_count }}</td>
+                <td>{{ row.absent_count }}</td>
+                <td>{{ row.pending_count }}</td>
+                <td>{{ row.latest_event_date or '-' }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">No participation records yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="card border-0 shadow-sm">
+  <div class="card-body">
+    <h2 class="h5">Participation Details</h2>
+    {% if history_rows %}
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Volunteer</th>
+              <th>Event</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Attendance</th>
+              <th>Registered At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in history_rows %}
+              <tr>
+                <td>{{ row.volunteer_name }}</td>
+                <td>{{ row.event_name }}</td>
+                <td>{{ row.event_date }}</td>
+                <td>{{ row.start_time.strftime('%H:%M') if row.start_time else 'TBA' }} - {{ row.end_time.strftime('%H:%M') if row.end_time else 'TBA' }}</td>
+                <td>
+                  {% set attendance_status = row.attendance if row.attendance else 'pending' %}
+                  <span
+                    class="badge {% if attendance_status == 'present' %}text-bg-success{% elif attendance_status == 'absent' %}text-bg-danger{% else %}text-bg-secondary{% endif %}"
+                  >
+                    {{ attendance_status.title() }}
+                  </span>
+                </td>
+                <td>{{ row.registered_at.strftime('%Y-%m-%d %H:%M') if row.registered_at else '-' }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">No participation records yet.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

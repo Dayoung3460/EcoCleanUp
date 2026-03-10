@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "EcoCleanUp: Debug-safe (no reload)",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "program": "${workspaceFolder}/run.py",
+      "env": {
+        "APP_MODE": "debug"
+      },
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "subProcess": false
+    },
+    {
+      "name": "EcoCleanUp: Hot-reload Dev",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "program": "${workspaceFolder}/run.py",
+      "env": {
+        "APP_MODE": "dev"
+      },
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "subProcess": false
+    }
+  ]
+}

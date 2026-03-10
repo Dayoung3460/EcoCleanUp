@@ -1,0 +1,66 @@
+.edit-toggle {
+  list-style: none;
+}
+
+.edit-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.edit-toggle .arrow {
+  font-size: 1.15rem;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.edit-toggle .arrow-open {
+  display: none;
+}
+
+details[open] .edit-toggle .arrow-open {
+  display: inline;
+}
+
+details[open] .edit-toggle .arrow-closed {
+  display: none;
+}
+
+.event-description {
+  background-color: #eaf7ec;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.report-tabs {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.report-tab {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.card-body h2,
+.card-body p {
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 768px) {
+  .event-card-main {
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .event-rating-meta {
+    margin-left: auto;
+    min-width: 8.5rem;
+    text-align: right;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-body form.d-flex.flex-column.flex-sm-row .btn {
+    width: 100%;
+  }
+}

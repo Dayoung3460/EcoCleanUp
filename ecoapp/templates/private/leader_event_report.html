@@ -1,0 +1,54 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}My Event Reports{% endblock %}
+{% set active_page = 'leader_reports' %}
+
+{% block content %}
+<section class="mb-4">
+  <h1 class="h3 text-success">My Event Reports</h1>
+  <p class="text-muted">Attendance and engagement summary for events you created.</p>
+</section>
+
+{% if report_rows %}
+  <div class="table-responsive card border-0 shadow-sm">
+    <table class="table mb-0 align-middle">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Date</th>
+          <th>Registrations</th>
+          <th>Attendees</th>
+          <th>Bags</th>
+          <th>Recyclables</th>
+          <th>Feedback Count</th>
+          <th>Other Achievements</th>
+          <th>Avg Rating</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in report_rows %}
+          <tr>
+            <td>{{ row.event_name }}</td>
+            <td>{{ row.event_date }}</td>
+            <td>{{ row.registrations }}</td>
+            <td>{{ row.attendees }}</td>
+            <td>{{ row.bags_collected }}</td>
+            <td>{{ row.recyclables_sorted }}</td>
+            <td>{{ row.feedback_count }}</td>
+            <td>{{ row.other_achievements or '-' }}</td>
+            <td>
+              {% if row.avg_rating is not none %}
+                <span>{{ row.avg_rating }}/5</span>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-secondary">No report data available yet.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,29 @@
+.reminder-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.reminder-item {
+  position: relative;
+  padding: 0.75rem 0.75rem 0.75rem 2.25rem;
+  border: 1px solid #d1e7dd;
+  border-radius: 0.5rem;
+  background-color: #f8fffb;
+  line-height: 1.5;
+  color: #2c3e34;
+}
+
+.reminder-item::before {
+  content: "\2022";
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #198754;
+  font-size: 1.25rem;
+  line-height: 1;
+}

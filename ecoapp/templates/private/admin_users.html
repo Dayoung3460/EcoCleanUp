@@ -1,0 +1,101 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}Manage Users{% endblock %}
+{% set active_page = 'admin_users' %}
+
+{% block content %}
+<section class="mb-4">
+  <h1 class="h3 text-success">User Management</h1>
+  <form class="row g-2 align-items-end" method="get" action="{{ url_for('admin_users') }}">
+    <div class="col-md-4"><label class="form-label">Search</label><input type="text" name="search" class="form-control" value="{{ search }}" placeholder="Username or full name"></div>
+    <div class="col-md-3">
+      <label class="form-label">Role</label>
+      <select name="role" class="form-select">
+        <option value="">All</option>
+        {% for r in ['volunteer','event_leader','admin'] %}
+          <option value="{{ r }}" {% if role_filter == r %}selected{% endif %}>{{ r.replace('_',' ').title() }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Status</label>
+      <select name="status" class="form-select">
+        <option value="">All</option>
+        {% for s in ['active','inactive'] %}
+          <option value="{{ s }}" {% if status_filter == s %}selected{% endif %}>{{ s.title() }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <div class="d-flex gap-2">
+        <button class="btn btn-success flex-fill" type="submit">Filter</button>
+        <a class="btn btn-outline-secondary flex-fill" href="{{ url_for('admin_users') }}">Reset</a>
+      </div>
+    </div>
+  </form>
+</section>
+
+<div class="d-flex flex-wrap gap-3 align-items-center text-muted small mb-3">
+  <span class="d-inline-flex align-items-center gap-1"><i class="bi bi-person-fill text-primary"></i><span>Volunteer</span></span>
+  <span class="d-inline-flex align-items-center gap-1"><i class="bi bi-star-fill" style="color:#6f42c1;"></i><span>Event Leader</span></span>
+  <span class="d-inline-flex align-items-center gap-1"><i class="bi bi-shield-fill" style="color:#fd7e14;"></i><span>Admin</span></span>
+</div>
+
+{% if users %}
+  <div class="table-responsive card border-0 shadow-sm">
+    <table class="table mb-0 align-middle">
+      <thead><tr><th>Name</th><th>Username</th><th>Email</th><th>Status</th><th>Profile</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for user in users %}
+          <tr>
+            <td>
+              <span class="d-inline-flex align-items-center gap-2">
+                {% if user.role == 'volunteer' %}
+                  <i class="bi bi-person-fill text-primary" title="Volunteer" aria-label="Volunteer"></i>
+                {% elif user.role == 'event_leader' %}
+                  <i class="bi bi-star-fill" style="color:#6f42c1;" title="Event Leader" aria-label="Event Leader"></i>
+                {% elif user.role == 'admin' %}
+                  <i class="bi bi-shield-fill" style="color:#fd7e14;" title="Admin" aria-label="Admin"></i>
+                {% endif %}
+                <span>{{ user.full_name }}</span>
+              </span>
+            </td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span class="badge {% if user.status == 'active' %}text-bg-success{% else %}text-bg-secondary{% endif %}">{{ user.status.title() }}</span>
+            </td>
+            <td>
+              <a
+                class="btn btn-sm btn-outline-primary"
+                href="{{ url_for('admin_view_user_profile', user_id=user.user_id, search=search, role=role_filter, status=status_filter) }}"
+              >
+                View
+              </a>
+            </td>
+            <td>
+              <form action="{{ url_for('admin_update_user_status', user_id=user.user_id) }}" method="post" class="d-flex flex-column flex-sm-row gap-2">
+                <!-- Hidden fields to preserve filter state -->
+                <input type="hidden" name="search" value="{{ search }}">
+                <input type="hidden" name="role_filter" value="{{ role_filter }}">
+                <input type="hidden" name="status_filter" value="{{ status_filter }}">
+                
+                <select name="status" class="form-select form-select-sm">
+                  <option value="active" {% if user.status == 'active' %}selected{% endif %}>Active</option>
+                  <option value="inactive" {% if user.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                </select>
+                <button class="btn btn-sm btn-outline-success" type="submit">Save</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-secondary d-flex justify-content-between align-items-center" role="alert">
+    <span>No users match your search criteria.</span>
+    <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin_users') }}">Clear filters</a>
+  </div>
+{% endif %}
+{% endblock %}

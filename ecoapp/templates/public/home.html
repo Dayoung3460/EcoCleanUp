@@ -1,0 +1,92 @@
+{% extends 'common/public_base.html' %}
+
+{% block title %}EcoCleanUp Hub{% endblock %}
+
+{% block extra_head %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site_header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="landing-page">
+  <header class="home-header site-navbar">
+    <nav class="navbar navbar-dark home-navbar">
+      <div class="container-fluid home-header-inner">
+        <a class="navbar-brand fw-semibold d-flex align-items-center gap-2 site-brand" href="{{ url_for('home') }}">
+          <span class="site-brand-mark" aria-hidden="true">
+            <img src="{{ url_for('static', filename='images/ecocleanup-logo.svg') }}" alt="">
+          </span>
+          <span>EcoCleanUp Hub</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <section id="hero" class="landing-hero" aria-labelledby="hero-title">
+    <div class="hero-overlay"></div>
+    <div class="landing-inner hero-content">
+      <p class="hero-kicker">Community Cleanup Platform</p>
+      <h1 id="hero-title">Join the Movement. Make a Difference in Your Community.</h1>
+      <p class="hero-subtitle">
+        EcoCleanUp helps volunteers, event leaders, and admins organise cleanups and track impact in one system.
+      </p>
+      <div class="hero-buttons">
+        <a class="btn btn-home-register btn-lg" href="{{ url_for('signup') }}">Register as Volunteer</a>
+        <a class="btn btn-outline-light btn-lg" href="{{ url_for('login') }}">Log In</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works" class="landing-content">
+    <div class="landing-inner">
+      <div class="content-grid">
+        <section class="flow-section">
+          <h2>How It Works</h2>
+          <div class="flow-steps">
+            <article class="flow-step">
+              <span class="step-icon"><i class="bi bi-search"></i></span>
+              <h3>Browse and Filter Events</h3>
+              <p>Volunteers can filter upcoming events by date, location, and event type.</p>
+            </article>
+            <article class="flow-step">
+              <span class="step-icon"><i class="bi bi-person-check"></i></span>
+              <h3>Register for an Event</h3>
+              <p>Sign up for upcoming cleanups in a few clicks and keep your event plans in one place.</p>
+            </article>
+            <article class="flow-step">
+              <span class="step-icon"><i class="bi bi-bar-chart-line"></i></span>
+              <h3>Track Attendance and Feedback</h3>
+              <p>Event leaders record attendance and outcomes, and volunteers submit event feedback.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="impact" class="impact-section">
+          <h2>Our Impact</h2>
+          <div class="impact-grid">
+            <article class="impact-item">
+              <p class="impact-number">{{ "{:,}".format(impact_stats.upcoming_events) }}</p>
+              <p class="impact-label">Upcoming cleanup events</p>
+            </article>
+            <article class="impact-item">
+              <p class="impact-number">{{ "{:,}".format(impact_stats.total_volunteers) }}</p>
+              <p class="impact-label">Volunteer members</p>
+            </article>
+            <article class="impact-item">
+              <p class="impact-number">{{ "{:,}".format(impact_stats.total_feedback_submissions) }}</p>
+              <p class="impact-label">Feedback submissions</p>
+            </article>
+            <article class="impact-item">
+              <p class="impact-number">{{ "{:,}".format(impact_stats.total_bags_collected) }}</p>
+              <p class="impact-label">Total bags collected</p>
+            </article>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

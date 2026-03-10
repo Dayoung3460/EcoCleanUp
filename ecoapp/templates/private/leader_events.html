@@ -1,0 +1,341 @@
+{% extends 'common/userbase.html' %}
+
+{% block title %}Manage Events{% endblock %}
+{% set active_page = 'leader_events' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/section_tabs.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leader_events.css') }}">
+
+<section class="mb-4">
+  <h1 class="h3 text-success mb-3">Manage My Events</h1>
+  <div class="card border-0 shadow-sm">
+    <div class="card-body">
+      <h2 class="h5">Create New Event</h2>
+      <p class="small text-muted mb-2">
+        <span class="text-danger">*</span> Required fields
+      </p>
+      <form action="{{ url_for('create_event') }}" method="post" class="row g-2">
+        <div class="col-md-4">
+          <label class="form-label mb-1" for="create_event_name">
+            Event name <span class="text-danger">*</span>
+          </label>
+          <input
+            class="form-control"
+            id="create_event_name"
+            name="event_name"
+            placeholder="Event name"
+            maxlength="100"
+            required
+          >
+        </div>
+        <div class="col-md-4">
+          <label class="form-label mb-1" for="create_location">
+            Location <span class="text-danger">*</span>
+          </label>
+          <input
+            class="form-control"
+            id="create_location"
+            name="location"
+            placeholder="Location"
+            maxlength="255"
+            required
+          >
+        </div>
+        <div class="col-md-4">
+          <label class="form-label mb-1" for="create_event_type">Type</label>
+          <input
+            class="form-control"
+            id="create_event_type"
+            name="event_type"
+            placeholder="Type"
+            maxlength="50"
+          >
+        </div>
+        <div class="col-md-3">
+          <label class="form-label mb-1" for="create_event_date">
+            Event date <span class="text-danger">*</span>
+          </label>
+          <input
+            type="date"
+            class="form-control"
+            id="create_event_date"
+            name="event_date"
+            min="{{ current_date }}"
+            required
+          >
+        </div>
+        <div class="col-md-3">
+          <label class="form-label mb-1" for="create_start_time">
+            Start time <span class="text-danger">*</span>
+          </label>
+          <input
+            type="time"
+            class="form-control"
+            id="create_start_time"
+            name="start_time"
+            required
+          >
+        </div>
+        <div class="col-md-3">
+          <label class="form-label mb-1" for="create_end_time">End time</label>
+          <input type="time" class="form-control" id="create_end_time" name="end_time">
+          <small id="create_time_warning" class="text-danger d-none"></small>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label mb-1" for="create_duration">
+            Duration (min) <span class="text-danger">*</span>
+          </label>
+          <input
+            type="number"
+            min="1"
+            class="form-control"
+            id="create_duration"
+            name="duration"
+            placeholder="Duration (min)"
+            required
+          >
+        </div>
+        <div class="col-12">
+          <label class="form-label mb-1" for="create_description">Description</label>
+          <textarea class="form-control" id="create_description" name="description" rows="2" placeholder="Description" maxlength="2000"></textarea>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label mb-1" for="create_supplies">
+            Supplies <span class="text-danger">*</span>
+          </label>
+          <textarea class="form-control" id="create_supplies" name="supplies" rows="2" placeholder="Supplies" maxlength="1000" required></textarea>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label mb-1" for="create_safety_instructions">
+            Safety instructions <span class="text-danger">*</span>
+          </label>
+          <textarea class="form-control" id="create_safety_instructions" name="safety_instructions" rows="2" placeholder="Safety instructions" maxlength="1000" required></textarea>
+        </div>
+        <div class="col-12 d-grid d-md-block">
+          <button class="btn btn-success" type="submit">Create Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div
+    class="report-tabs d-flex flex-nowrap overflow-auto"
+    role="tablist"
+    aria-label="Event time filter"
+  >
+    <a
+      class="report-tab {% if selected_tab == 'today' %}active{% else %}inactive{% endif %}"
+      href="{{ url_for('leader_events', tab='today') }}"
+      role="tab"
+      aria-selected="{{ 'true' if selected_tab == 'today' else 'false' }}"
+      {% if selected_tab == 'today' %}aria-current="page"{% endif %}
+    >
+      Today ({{ today_count }})
+    </a>
+    <a
+      class="report-tab {% if selected_tab == 'upcoming' %}active{% else %}inactive{% endif %}"
+      href="{{ url_for('leader_events', tab='upcoming') }}"
+      role="tab"
+      aria-selected="{{ 'true' if selected_tab == 'upcoming' else 'false' }}"
+      {% if selected_tab == 'upcoming' %}aria-current="page"{% endif %}
+    >
+      Upcoming ({{ upcoming_count }})
+    </a>
+    <a
+      class="report-tab {% if selected_tab == 'past' %}active{% else %}inactive{% endif %}"
+      href="{{ url_for('leader_events', tab='past') }}"
+      role="tab"
+      aria-selected="{{ 'true' if selected_tab == 'past' else 'false' }}"
+      {% if selected_tab == 'past' %}aria-current="page"{% endif %}
+    >
+      Past ({{ past_count }})
+    </a>
+    <a
+      class="report-tab {% if selected_tab == 'cancelled' %}active{% else %}inactive{% endif %}"
+      href="{{ url_for('leader_events', tab='cancelled') }}"
+      role="tab"
+      aria-selected="{{ 'true' if selected_tab == 'cancelled' else 'false' }}"
+      {% if selected_tab == 'cancelled' %}aria-current="page"{% endif %}
+    >
+      Cancelled ({{ cancelled_count }})
+    </a>
+  </div>
+  <div class="report-tabs-line mb-3"></div>
+
+  {% if events %}
+    <div class="row g-3">
+      {% for event in events %}
+        <div class="col-lg-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="d-flex flex-column flex-md-row align-items-start gap-2 mb-2">
+                <h2 class="h5 mb-0 flex-grow-1">{{ event.event_name }}</h2>
+                {% if selected_tab != 'cancelled' %}
+                  <div class="d-flex flex-wrap gap-2 flex-shrink-0 justify-content-start justify-content-md-end ms-md-auto">
+                    <a
+                      class="btn btn-sm btn-outline-primary"
+                      href="{{ url_for('view_event_volunteers', event_id=event.event_id) }}"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title="Volunteers & Outcomes"
+                      aria-label="Volunteers & Outcomes"
+                    >
+                      <i class="bi bi-people"></i>
+                    </a>
+                    <a
+                      class="btn btn-sm btn-outline-secondary"
+                      href="{{ url_for('show_event_edit_form', event_id=event.event_id) }}"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title="Edit Event"
+                      aria-label="Edit Event"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    {% if selected_tab in ['today', 'upcoming'] %}
+                    <button
+                      class="btn btn-sm btn-outline-info"
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#reminderModal{{ event.event_id }}"
+                      data-bs-placement="top"
+                      title="Send Reminder"
+                      aria-label="Open reminder message form"
+                    >
+                      <i class="bi bi-bell"></i>
+                    </button>
+                    {% endif %}
+                    {% if selected_tab in ['today', 'upcoming', 'past'] %}
+                    <form action="{{ url_for('cancel_event', event_id=event.event_id) }}" method="post" onsubmit="return confirm('Are you sure you want to cancel this event?');">
+                      <button
+                        class="btn btn-sm btn-outline-danger"
+                        type="submit"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Cancel Event"
+                        aria-label="Cancel Event"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+              <p class="mb-1"><strong>Date:</strong> {{ event.event_date }} | <strong>Time:</strong> {{ event.start_time.strftime('%H:%M') if event.start_time else 'TBA' }} - {{ event.end_time.strftime('%H:%M') if event.end_time else 'TBA' }}</p>
+              <p class="mb-1"><strong>Location:</strong> {{ event.location }}</p>
+              <p class="mb-1">
+                <strong>Type:</strong>
+                {{ event.event_type if event.event_type else 'Not specified' }}
+              </p>
+              <p class="mb-1">
+                <strong>Duration:</strong>
+                {% if event.duration and event.duration > 0 %}
+                  {% set hours = event.duration // 60 %}
+                  {% set minutes = event.duration % 60 %}
+                  {% if hours > 0 and minutes > 0 %}
+                    {{ hours }} hr {{ minutes }} min
+                  {% elif hours > 0 %}
+                    {{ hours }} hr
+                  {% else %}
+                    {{ minutes }} min
+                  {% endif %}
+                {% else %}
+                  TBA
+                {% endif %}
+              </p>
+              {% if event.description %}
+                <p class="mb-2 event-description">{{ event.description }}</p>
+              {% endif %}
+              <p class="mb-1">
+                <strong>Supplies:</strong>
+                {{ event.supplies if event.supplies else 'Not specified' }}
+              </p>
+              <p class="mb-2">
+                <strong>Safety instructions:</strong>
+                {{ event.safety_instructions if event.safety_instructions else 'Not specified' }}
+              </p>
+              <p class="mb-2">
+                <strong>Registrations:</strong> {{ event.registrations }}
+                {% if selected_tab == 'past' %}
+                  | <strong>Present:</strong> {{ event.present_count }}
+                {% endif %}
+              </p>
+            </div>
+
+            {% if selected_tab in ['today', 'upcoming'] %}
+            <div
+              class="modal fade"
+              id="reminderModal{{ event.event_id }}"
+              tabindex="-1"
+              aria-labelledby="reminderModalLabel{{ event.event_id }}"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3 class="modal-title fs-5" id="reminderModalLabel{{ event.event_id }}">
+                      Send Reminder
+                    </h3>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <form
+                    action="{{ url_for('send_event_reminder', event_id=event.event_id) }}"
+                    method="post"
+                  >
+                    <div class="modal-body">
+                      <label class="form-label" for="reminder_message_{{ event.event_id }}">
+                        Reminder message
+                      </label>
+                      <textarea
+                        class="form-control"
+                        id="reminder_message_{{ event.event_id }}"
+                        name="reminder_message"
+                        rows="4"
+                        maxlength="500"
+                        placeholder="Write a short reminder for your volunteers"
+                        required
+                      ></textarea>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        Cancel
+                      </button>
+                      <button type="submit" class="btn btn-success">
+                        Send reminder
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-secondary">
+      {% if selected_tab == 'today' %}
+        No events are scheduled for today.
+      {% elif selected_tab == 'upcoming' %}
+        No upcoming events found.
+      {% elif selected_tab == 'past' %}
+        No past events found.
+      {% else %}
+        No cancelled events found.
+      {% endif %}
+    </div>
+  {% endif %}
+</section>
+
+<script src="{{ url_for('static', filename='js/leader-events.js') }}"></script>
+{% endblock %}

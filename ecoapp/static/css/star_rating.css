@@ -1,0 +1,21 @@
+.rating-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  color: #f4c542;
+}
+
+.rating-stars .bi {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.rating-stars .star-empty {
+  color: #e2e8f0;
+}
+
+.rating-value {
+  margin-left: 0.35rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+}

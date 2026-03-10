@@ -1,0 +1,29 @@
+<type>(<scope>): <subject>
+
+# Types:
+# feat     a new feature
+# fix      a bug fix
+# docs     documentation changes (README, assignment notes, etc.)
+# style    formatting/style-only changes (no logic changes)
+# refactor code changes that neither fix a bug nor add a feature
+# test     adding or updating tests
+# chore    build/config/dependency/maintenance tasks
+
+# Scopes (EcoCleanUp):
+# auth, volunteer, event-leader, admin, profile, events,
+# registration, feedback, dashboard, db, sql, api,
+# templates, static, ui, deploy
+
+# Subject rules:
+# - use imperative mood (e.g., "add volunteer signup validation")
+# - start with lowercase
+# - no trailing period
+# - keep it within 72 characters
+
+# Body (optional):
+# - explain what changed and why (focus on why, not how)
+# - mention impact or migration notes when relevant
+
+# Footer (optional):
+# - BREAKING CHANGE: ...
+# - Refs: #issue-number
